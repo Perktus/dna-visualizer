@@ -1,9 +1,12 @@
+# ── CMake ──────────────────────────────────────────────
 cmake_minimum_required(VERSION 3.20)
 project(dna_visualizer VERSION 1.0 LANGUAGES CXX)
 
+# ── C++ Standard ───────────────────────────────────────
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# ── Fetch Content ──────────────────────────────────────
 include(FetchContent)
 
 # ── GLFW ──────────────────────────────────────────────
@@ -36,14 +39,22 @@ glad_add_library(glad_gl REPRODUCIBLE API gl:core=3.3)
 # ── Executable ────────────────────────────────────────
 add_executable(dna_visualizer
     src/core/main.cpp
+    src/renderer/Shader.cpp
 )
 
+# ── MSVC ──────────────────────────────────────────────
+if(MSVC)
+    target_link_options(dna_visualizer PRIVATE /NODEFAULTLIB:LIBCMT)
+endif()
+
+# ── Link Libraries ─────────────────────────────────────
 target_link_libraries(dna_visualizer PRIVATE
     glfw
     glm
     glad_gl
 )
 
+# ── Include Directories ─────────────────────────────────
 target_include_directories(dna_visualizer PRIVATE
     include/
 )
