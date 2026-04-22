@@ -40,6 +40,7 @@ glad_add_library(glad_gl REPRODUCIBLE API gl:core=3.3)
 add_executable(dna_visualizer
     src/core/main.cpp
     src/renderer/Shader.cpp
+    src/renderer/Mesh.cpp
 )
 
 # ── MSVC ──────────────────────────────────────────────
