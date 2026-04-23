@@ -41,6 +41,7 @@ add_executable(dna_visualizer
     src/core/main.cpp
     src/renderer/Shader.cpp
     src/renderer/Mesh.cpp
+    src/renderer/Camera.cpp
 )
 
 # ── MSVC ──────────────────────────────────────────────
