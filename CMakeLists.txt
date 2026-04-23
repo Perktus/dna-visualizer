@@ -39,6 +39,9 @@ glad_add_library(glad_gl REPRODUCIBLE API gl:core=3.3)
 # ── Executable ────────────────────────────────────────
 add_executable(dna_visualizer
     src/core/main.cpp
+    src/core/Application.cpp
+    src/core/Window.cpp
+    src/core/InputManager.cpp
     src/renderer/Shader.cpp
     src/renderer/Mesh.cpp
     src/renderer/Camera.cpp
