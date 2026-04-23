@@ -15,6 +15,13 @@ Mesh::~Mesh() {
     glDeleteBuffers(1, &m_ebo);
 }
 
+Mesh::Mesh(Mesh&& other) noexcept : m_vao(other.m_vao), m_vbo(other.m_vbo), m_ebo(other.m_ebo), m_indexCount(other.m_indexCount) {
+    other.m_vao        = 0;
+    other.m_vbo        = 0;
+    other.m_ebo        = 0;
+    other.m_indexCount = 0;
+}
+
 // ── Draw ── //
 void Mesh::draw() const {
     glBindVertexArray(m_vao);

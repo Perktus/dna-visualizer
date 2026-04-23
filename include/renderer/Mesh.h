@@ -17,6 +17,9 @@ public:
     Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
     ~Mesh();
 
+    Mesh(Mesh&& other) noexcept;
+    Mesh& operator=(Mesh&& other) noexcept = delete;
+
     Mesh(const Mesh&)            = delete;
     Mesh& operator=(const Mesh&) = delete;
 
