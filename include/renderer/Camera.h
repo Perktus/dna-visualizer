@@ -14,6 +14,7 @@ public:
 
     glm::mat4 getView() const;
     glm::mat4 getProjection() const;
+    glm::vec3 getPosition() const;
 
     void setAspect(float aspect);
 
@@ -24,8 +25,8 @@ private:
     float m_sensitivity { 0.3f };   
 
     float m_fov { 45.0f };
-    float m_aspect {  1.0f };
-    float m_near {  0.1f };
+    float m_aspect { 1.0f };
+    float m_near { 0.1f };
     float m_far { 100.0f };
 };
 

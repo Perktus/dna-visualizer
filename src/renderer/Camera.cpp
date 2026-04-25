@@ -39,6 +39,16 @@ glm::mat4 Camera::getProjection() const {
     return glm::perspective(glm::radians(m_fov), m_aspect, m_near, m_far);
 }
 
+glm::vec3 Camera::getPosition() const {
+    float yawRad   = glm::radians(m_yaw);
+    float pitchRad = glm::radians(m_pitch);
+
+    return {
+        m_distance * std::cos(pitchRad) * std::sin(yawRad),
+        m_distance * std::sin(pitchRad),
+        m_distance * std::cos(pitchRad) * std::cos(yawRad)
+    };
+}
 
 void Camera::setAspect(float aspect) {
     m_aspect = aspect;
