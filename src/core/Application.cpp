@@ -15,7 +15,10 @@ Application::Application() {
     m_sphere = std::make_unique<Mesh>(
         std::move(Mesh::createSphere(1.0f, 32, 32))
     );
-    
+
+    m_texture = std::make_unique<Texture>(
+        "assets/textures/sphere.jpg"
+    );
 }
 
 // ── Run ── //
@@ -61,7 +64,9 @@ void Application::render() {
     m_shader->setMat4("uModel", glm::mat4(1.0f));
     m_shader->setMat4("uView", m_camera.getView());
     m_shader->setMat4("uProjection", m_camera.getProjection());
-    m_shader->setVec3("uColor", glm::vec3(0.2f, 0.8f, 0.4f));
+    m_shader->setVec3("uColor", glm::vec3(1.0f));
+    m_texture->bind(0);
+    m_shader->setInt("uDiffuseTex", 0);
     m_shader->setVec3("uLightPos", m_lightPos);
     m_shader->setVec3("uLightColor", m_lightColor);
     m_shader->setVec3("uViewPos", viewPos);
