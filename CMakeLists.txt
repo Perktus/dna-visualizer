@@ -26,6 +26,13 @@ FetchContent_Declare(glm
 )
 FetchContent_MakeAvailable(glm)
 
+# ── STB ───────────────────────────────────────────────
+FetchContent_Declare(stb
+    GIT_REPOSITORY https://github.com/nothings/stb.git
+    GIT_TAG        master
+)
+FetchContent_MakeAvailable(stb)
+
 # ── GLAD ──────────────────────────────────────────────
 FetchContent_Declare(glad
     GIT_REPOSITORY https://github.com/Dav1dde/glad.git
@@ -45,6 +52,8 @@ add_executable(dna_visualizer
     src/renderer/Shader.cpp
     src/renderer/Mesh.cpp
     src/renderer/Camera.cpp
+    src/renderer/Texture.cpp
+    src/renderer/StbMacro.cpp
 )
 
 # ── MSVC ──────────────────────────────────────────────
@@ -62,4 +71,6 @@ target_link_libraries(dna_visualizer PRIVATE
 # ── Include Directories ─────────────────────────────────
 target_include_directories(dna_visualizer PRIVATE
     include/
+    ${stb_SOURCE_DIR}
 )
+
