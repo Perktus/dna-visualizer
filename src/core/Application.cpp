@@ -30,6 +30,7 @@ Application::Application()
 // ── Run ── //
 int Application::run() {
     while (!m_window.shouldClose()) {
+        m_timer.tick();
         m_window.pollEvents();
         update();
         render();
@@ -55,6 +56,9 @@ void Application::update() {
 
     // Aspect ratio when changing window size
     m_camera.setAspect(m_window.getAspect());
+    
+    // Helix rotation based on time
+    m_rotationAngle += m_rotationSpeed * m_timer.getDeltaTime();
 }
 
 // ── Render ── //
@@ -66,17 +70,19 @@ void Application::render() {
 
     m_shader->bind();
 
-    const glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -m_helixCenterY, 0.0f));
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -m_helixCenterY, 0.0f));
+    model = glm::rotate(model, m_rotationAngle, glm::vec3(0.0f, 1.0f, 0.0f));
 
-    m_shader->setFloat("uShininess", 32.0f);
-    m_shader->setMat4("uModel", model);
-    m_shader->setMat4("uView", m_camera.getView());
-    m_shader->setMat4("uProjection", m_camera.getProjection());
+    m_shader->setMat4 ("uModel", model);
+    m_shader->setMat4 ("uView", m_camera.getView());
+    m_shader->setMat4 ("uProjection", m_camera.getProjection());
+    m_shader->setFloat ("uShininess",  32.0f);
+    m_shader->setVec3 ("uLightPos", m_lightPos);
+    m_shader->setVec3 ("uLightColor", m_lightColor);
+    m_shader->setVec3 ("uViewPos", viewPos);
+
     m_texture->bind(0);
     m_shader->setInt("uDiffuseTex", 0);
-    m_shader->setVec3("uLightPos", m_lightPos);
-    m_shader->setVec3("uLightColor", m_lightColor);
-    m_shader->setVec3("uViewPos", viewPos);
 
     m_shader->setVec3("uColor", glm::vec3(0.25f, 0.55f, 1.0f));
     m_helix.strandA.draw();

@@ -49,6 +49,7 @@ add_executable(dna_visualizer
     src/core/Application.cpp
     src/core/Window.cpp
     src/core/InputManager.cpp
+    src/core/Timer.cpp
     src/renderer/Shader.cpp
     src/renderer/Mesh.cpp
     src/renderer/Camera.cpp
