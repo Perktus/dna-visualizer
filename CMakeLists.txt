@@ -54,6 +54,8 @@ add_executable(dna_visualizer
     src/renderer/Camera.cpp
     src/renderer/Texture.cpp
     src/renderer/StbMacro.cpp
+    src/dna/DNASequence.cpp
+    src/dna/HelixGeometry.cpp
 )
 
 # ── MSVC ──────────────────────────────────────────────
