@@ -36,7 +36,8 @@ glm::mat4 Camera::getView() const {
 }
 
 glm::mat4 Camera::getProjection() const {
-    return glm::perspective(glm::radians(m_fov), m_aspect, m_near, m_far);
+    const float aspect = std::max(m_aspect, 0.01f);
+    return glm::perspective(glm::radians(m_fov), aspect, m_near, m_far);
 }
 
 glm::vec3 Camera::getPosition() const {
@@ -51,7 +52,7 @@ glm::vec3 Camera::getPosition() const {
 }
 
 void Camera::setAspect(float aspect) {
-    m_aspect = aspect;
+    m_aspect = std::max(aspect, 0.01f);
 }
 
 } // namespace dna
