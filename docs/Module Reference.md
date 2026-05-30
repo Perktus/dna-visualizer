@@ -50,7 +50,7 @@ Top-level application class. Not intended for extension outside `src/core/Applic
 
 ### `DNASequence`
 
-See [DNA model](dna-model.md).
+See [DNA model](DNA%20Model.md).
 
 ### `HelixGeometry`
 
@@ -97,7 +97,7 @@ Move-only; copying is deleted.
 
 ### `Camera`
 
-Arcball camera. See [Rendering pipeline](rendering-pipeline.md#camera).
+Arcball camera. See [Rendering pipeline](Rendering%20Pipeline.md#camera).
 
 | Method | Description |
 |--------|-------------|
