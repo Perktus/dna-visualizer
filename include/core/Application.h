@@ -2,37 +2,52 @@
 
 #include <core/Window.h>
 #include <core/Timer.h>
+#include <dna/DNASequence.h>
+#include <dna/MutationEngine.h>
 #include <dna/HelixGeometry.h>
 #include <renderer/Shader.h>
 #include <renderer/Camera.h>
 #include <renderer/Texture.h>
+#include <renderer/Mesh.h>
+#include <ui/UILayer.h>
 #include <memory>
 
 namespace dna {
 
 class Application {
 public:
-    Application();
-    int run();
+    Application(); // constructor
+    int run(); // function to run the application
 
 private:
-    void update();
-    void render();
+    void update(); // function to update the application
+    void render(); // function to render the application
+    void rebuildHelix(int length); // function to rebuild the helix
 
-    Window m_window{ 1280, 720, "DNA Visualizer" };
-    Camera m_camera{ 45.0f, 1280.0f / 720.0f, 0.1f, 100.0f };
-    Timer m_timer;
+    Window m_window{ 1280, 720, "DNA Visualizer" }; // application window
+    Camera m_camera{ 45.0f, 1280.0f / 720.0f, 0.1f, 100.0f }; // camera
+    Timer m_timer; // timer
 
-    std::unique_ptr<Shader>  m_shader;
-    std::unique_ptr<Texture> m_texture;
-    HelixMeshes m_helix;
+    std::unique_ptr<Shader>  m_shader; // shader
+    std::unique_ptr<Texture> m_texture; // texture
+    std::unique_ptr<UILayer> m_uiLayer; // UI layer
 
-    float m_helixCenterY  { 0.0f };
-    float m_rotationAngle { 0.0f };   
-    float m_rotationSpeed { 0.5f };   
+    DNASequence m_sequence{ DNASequence::random(32) }; // DNA sequence
+    MutationEngine m_mutationEngine{ m_sequence }; // mutation engine
+    HelixMeshes m_helix; // helix meshes
+    Mesh m_highlightSphere; // unit sphere for mutation flash
 
-    glm::vec3 m_lightPos  { 3.0f, 3.0f, 3.0f };
-    glm::vec3 m_lightColor{ 1.0f, 1.0f, 1.0f };
+    float m_helixCenterY { 0.0f }; // helix center y
+    float m_rotationAngle{ 0.0f }; // rotation angle
+
+    int m_highlightIndex{ -1 }; // highlight index
+    float m_highlightTimer{ 0.0f }; // highlight timer
+    float m_highlightDuration{ 2.0f }; // highlight duration
+
+    UIState m_uiState; // UI state
+
+    glm::vec3 m_lightPos { 3.0f, 3.0f, 3.0f }; // light position
+    glm::vec3 m_lightColor { 1.0f, 1.0f, 1.0f }; // light    color
 };
 
 } // namespace dna
