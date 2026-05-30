@@ -43,6 +43,29 @@ FetchContent_MakeAvailable(glad)
 
 glad_add_library(glad_gl REPRODUCIBLE API gl:core=3.3)
 
+# ── ImGui ─────────────────────────────────────────────
+FetchContent_Declare(imgui
+    GIT_REPOSITORY https://github.com/ocornut/imgui.git
+    GIT_TAG        v1.90.4
+)
+FetchContent_MakeAvailable(imgui)
+
+add_library(imgui STATIC
+    ${imgui_SOURCE_DIR}/imgui.cpp
+    ${imgui_SOURCE_DIR}/imgui_draw.cpp
+    ${imgui_SOURCE_DIR}/imgui_tables.cpp
+    ${imgui_SOURCE_DIR}/imgui_widgets.cpp
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
+)
+
+target_include_directories(imgui PUBLIC
+    ${imgui_SOURCE_DIR}
+    ${imgui_SOURCE_DIR}/backends
+)
+
+target_link_libraries(imgui PUBLIC glfw)
+
 # ── Executable ────────────────────────────────────────
 add_executable(dna_visualizer
     src/core/main.cpp
@@ -57,6 +80,8 @@ add_executable(dna_visualizer
     src/renderer/StbMacro.cpp
     src/dna/DNASequence.cpp
     src/dna/HelixGeometry.cpp
+    src/dna/MutationEngine.cpp
+    src/ui/UILayer.cpp
 )
 
 # ── MSVC ──────────────────────────────────────────────
@@ -64,16 +89,16 @@ if(MSVC)
     target_link_options(dna_visualizer PRIVATE /NODEFAULTLIB:LIBCMT)
 endif()
 
-# ── Link Libraries ─────────────────────────────────────
+# ── Link Libraries ────────────────────────────────────
 target_link_libraries(dna_visualizer PRIVATE
     glfw
     glm
     glad_gl
+    imgui
 )
 
-# ── Include Directories ─────────────────────────────────
+# ── Include Directories ───────────────────────────────
 target_include_directories(dna_visualizer PRIVATE
     include/
     ${stb_SOURCE_DIR}
 )
-
