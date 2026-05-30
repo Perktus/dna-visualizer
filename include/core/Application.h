@@ -9,6 +9,7 @@
 #include <renderer/Camera.h>
 #include <renderer/Texture.h>
 #include <renderer/Mesh.h>
+#include <renderer/Framebuffer.h>
 #include <ui/UILayer.h>
 #include <memory>
 
@@ -20,16 +21,20 @@ public:
     int run(); // function to run the application
 
 private:
-    void update(); // function to update the application
-    void render(); // function to render the application
-    void rebuildHelix(int length); // function to rebuild the helix
+    void update();
+    void render();
+    void renderScene();
+    void renderPostProcess();
+    void rebuildHelix(int length);
 
     Window m_window{ 1280, 720, "DNA Visualizer" }; // application window
     Camera m_camera{ 45.0f, 1280.0f / 720.0f, 0.1f, 100.0f }; // camera
     Timer m_timer; // timer
 
-    std::unique_ptr<Shader>  m_shader; // shader
-    std::unique_ptr<Texture> m_texture; // texture
+    std::unique_ptr<Shader>  m_shader;
+    std::unique_ptr<Shader>  m_postShader;
+    std::unique_ptr<Texture> m_texture;
+    Framebuffer m_framebuffer;
     std::unique_ptr<UILayer> m_uiLayer; // UI layer
 
     DNASequence m_sequence{ DNASequence::random(32) }; // DNA sequence
