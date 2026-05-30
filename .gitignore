@@ -2,3 +2,4 @@ build/
 external/
 *.exe
 *.obj
+imgui.ini
