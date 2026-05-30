@@ -24,6 +24,7 @@ public:
     int getHeight() const { return m_height; }
     float getAspect() const { return static_cast<float>(m_width) / static_cast<float>(m_height); }
     InputManager& getInput() { return m_input; }
+    GLFWwindow* getHandle() const { return m_window; }
 
 private:
     GLFWwindow* m_window{ nullptr };
