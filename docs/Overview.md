@@ -6,11 +6,11 @@ Technical documentation for the DNA Visualizer coursework project. For a quick s
 
 | Document | Description |
 |----------|-------------|
-| [Architecture](architecture.md) | High-level design, module boundaries, and main loop |
-| [Rendering pipeline](rendering-pipeline.md) | FBO, Phong shading, post-processing (Sobel, FXAA, vignette) |
-| [DNA model](dna-model.md) | Sequences, helix geometry, Watson–Crick pairing, mutations |
-| [Module reference](module-reference.md) | Classes, responsibilities, and key APIs |
-| [Build & development](build-and-development.md) | Build steps, dependencies, conventions, extending the project |
+| [Architecture](Architecture.md) | High-level design, module boundaries, and main loop |
+| [Rendering pipeline](Rendering%20Pipeline.md) | FBO, Phong shading, post-processing (Sobel, FXAA, vignette) |
+| [DNA model](DNA%20Model.md) | Sequences, helix geometry, Watson–Crick pairing, mutations |
+| [Module reference](Module%20Reference.md) | Classes, responsibilities, and key APIs |
+| [Build & development](Build%20and%20Development.md) | Build steps, dependencies, conventions, extending the project |
 
 ## Quick reference
 
