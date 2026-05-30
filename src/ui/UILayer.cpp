@@ -97,6 +97,9 @@ void UILayer::render(UIState& state, const std::string& sequence) {
     ImGui::Separator(); // separator 
     ImGui::Text("Post-processing:"); // text 
     ImGui::Checkbox("Sobel Edge Detection", &state.sobelEnabled);
+    ImGui::Checkbox("FXAA (anti-aliasing)", &state.fxaaEnabled);
+    if (state.sobelEnabled && state.fxaaEnabled)
+        ImGui::TextDisabled("FXAA applies only when Sobel is off.");
     ImGui::Checkbox("Vignette", &state.vignetteEnabled);
     if (state.vignetteEnabled)
         ImGui::SliderFloat("Vignette Strength", &state.vignetteStrength, 0.0f, 1.0f);

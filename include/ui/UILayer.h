@@ -25,6 +25,7 @@ struct UIState {
 
     // Post-processing //
     bool sobelEnabled { false };
+    bool fxaaEnabled { true };
     bool vignetteEnabled { false };
     float vignetteStrength { 0.65f };
 
