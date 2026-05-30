@@ -25,6 +25,8 @@ struct UIState {
 
     // Post-processing //
     bool sobelEnabled { false };
+    bool vignetteEnabled { false };
+    float vignetteStrength { 0.65f };
 
     // Regenerate helix //
     bool triggerRegenerate{ false };

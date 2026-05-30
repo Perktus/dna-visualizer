@@ -96,7 +96,10 @@ void UILayer::render(UIState& state, const std::string& sequence) {
     // Post-processing //
     ImGui::Separator(); // separator 
     ImGui::Text("Post-processing:"); // text 
-    ImGui::Checkbox("Sobel Edge Detection", &state.sobelEnabled); // checkbox 
+    ImGui::Checkbox("Sobel Edge Detection", &state.sobelEnabled);
+    ImGui::Checkbox("Vignette", &state.vignetteEnabled);
+    if (state.vignetteEnabled)
+        ImGui::SliderFloat("Vignette Strength", &state.vignetteStrength, 0.0f, 1.0f);
 
     // Mutation history //
     ImGui::Separator(); // separator 

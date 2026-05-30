@@ -183,6 +183,8 @@ void Application::renderPostProcess() {
     m_postShader->bind();
     m_postShader->setInt("uScreenTex", 0);
     m_postShader->setInt("uSobelEnabled", m_uiState.sobelEnabled ? 1 : 0);
+    m_postShader->setInt("uVignetteEnabled", m_uiState.vignetteEnabled ? 1 : 0);
+    m_postShader->setFloat("uVignetteStrength", m_uiState.vignetteStrength);
     m_postShader->setVec2(
         "uTexelSize",
         glm::vec2(
