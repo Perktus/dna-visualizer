@@ -10,6 +10,7 @@ struct Vertex {
     glm::vec3 position;
     glm::vec3 normal;
     glm::vec2 uv;
+    glm::vec3 color { 1.0f, 1.0f, 1.0f };
 };
 
 class Mesh {
@@ -18,7 +19,7 @@ public:
     ~Mesh();
 
     Mesh(Mesh&& other) noexcept;
-    Mesh& operator=(Mesh&& other) noexcept = delete;
+    Mesh& operator=(Mesh&& other) noexcept;
 
     Mesh(const Mesh&)            = delete;
     Mesh& operator=(const Mesh&) = delete;

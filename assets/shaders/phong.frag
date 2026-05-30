@@ -3,6 +3,7 @@
 in vec3 vFragPos;
 in vec3 vNormal;
 in vec2 vUV;
+in vec3 vColor;
 
 out vec4 FragColor;
 
@@ -30,6 +31,6 @@ void main() {
     float spec = pow(max(dot(R, V), 0.0), uShininess);
     vec3 specular = spec * uLightColor * 0.5;
 
-    vec3 result = (ambient + diffuse) * (texColor * uColor) + specular;
+    vec3 result = (ambient + diffuse) * (texColor * vColor * uColor) + specular;
     FragColor = vec4(result, 1.0);
 }

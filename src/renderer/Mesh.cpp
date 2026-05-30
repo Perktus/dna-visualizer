@@ -22,6 +22,27 @@ Mesh::Mesh(Mesh&& other) noexcept : m_vao(other.m_vao), m_vbo(other.m_vbo), m_eb
     other.m_indexCount = 0;
 }
 
+Mesh& Mesh::operator=(Mesh&& other) noexcept {
+    if (this == &other)
+        return *this;
+
+    if (m_vao) glDeleteVertexArrays(1, &m_vao);
+    if (m_vbo) glDeleteBuffers(1, &m_vbo);
+    if (m_ebo) glDeleteBuffers(1, &m_ebo);
+
+    m_vao        = other.m_vao;
+    m_vbo        = other.m_vbo;
+    m_ebo        = other.m_ebo;
+    m_indexCount = other.m_indexCount;
+
+    other.m_vao        = 0;
+    other.m_vbo        = 0;
+    other.m_ebo        = 0;
+    other.m_indexCount = 0;
+
+    return *this;
+}
+
 // ── Draw ── //
 void Mesh::draw() const {
     glBindVertexArray(m_vao);
@@ -60,6 +81,10 @@ void Mesh::upload(const std::vector<Vertex>& vertices, const std::vector<unsigne
     // location = 2 : uv (vec2) //
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));
     glEnableVertexAttribArray(2);
+
+    // location = 3 : color (vec3) //
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
+    glEnableVertexAttribArray(3);
 
     glBindVertexArray(0);
 }
