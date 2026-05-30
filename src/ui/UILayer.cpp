@@ -45,11 +45,16 @@ void UILayer::endFrame() {
 
 // ── Render ── //
 void UILayer::render(UIState& state, const std::string& sequence) {
+    const ImVec2 display = ImGui::GetIO().DisplaySize; // display size
+    constexpr float kPanelWidth = 320.0f; // panel width
+    constexpr float kMargin = 10.0f; // margin
+    const float rightX = display.x - kPanelWidth - kMargin; // right x
+    constexpr ImGuiWindowFlags kFixedPanel = ImGuiWindowFlags_NoMove; // fixed panel
 
-    // Panel DNA // 
-    ImGui::SetNextWindowPos ({ 10.0f, 10.0f }, ImGuiCond_Once); // set next window position
-    ImGui::SetNextWindowSize ({ 320.0f, 0.0f }, ImGuiCond_Once); // set next window size
-    ImGui::Begin("DNA Sequence"); // begin panel
+    // Panel DNA (left) //
+    ImGui::SetNextWindowPos({ kMargin, kMargin }, ImGuiCond_Always); // set next window position
+    ImGui::SetNextWindowSize({ kPanelWidth, 0.0f }, ImGuiCond_FirstUseEver); // set next window size
+    ImGui::Begin("DNA Sequence", nullptr, kFixedPanel); // begin panel
 
     // text to display sequence //
     ImGui::Text("Sequence (%d bp):", (int)sequence.size()); // text 
@@ -64,7 +69,7 @@ void UILayer::render(UIState& state, const std::string& sequence) {
 
     ImGui::Separator(); // separator 
     ImGui::Text("Point mutation:"); // text 
-    ImGui::SliderInt("Index", &state.mutationIndex, 0, (int)sequence.size() - 1);
+    ImGui::SliderInt("Index", &state.mutationIndex, 0, (int)sequence.size() - 1); // slider int
 
     // combo box to select base //
     const char* bases[] = { "A", "T", "G", "C" };
@@ -76,10 +81,10 @@ void UILayer::render(UIState& state, const std::string& sequence) {
 
     ImGui::End(); // end panel
 
-    // Panel Rendering // 
-    ImGui::SetNextWindowPos ({ 10.0f, 300.0f }, ImGuiCond_Once); // set next window position
-    ImGui::SetNextWindowSize({ 320.0f, 0.0f  }, ImGuiCond_Once); // set next window size
-    ImGui::Begin("Render Settings"); // begin panel
+    // Panel Rendering (right) //
+    ImGui::SetNextWindowPos({ rightX, kMargin }, ImGuiCond_Always); // set next window position
+    ImGui::SetNextWindowSize({ kPanelWidth, 0.0f }, ImGuiCond_FirstUseEver); // set next window size
+    ImGui::Begin("Render Settings", nullptr, kFixedPanel); // begin panel
 
     // Animation //
     ImGui::Text("Animation:"); // text 
@@ -96,13 +101,13 @@ void UILayer::render(UIState& state, const std::string& sequence) {
     // Post-processing //
     ImGui::Separator(); // separator 
     ImGui::Text("Post-processing:"); // text 
-    ImGui::Checkbox("Sobel Edge Detection", &state.sobelEnabled);
-    ImGui::Checkbox("FXAA (anti-aliasing)", &state.fxaaEnabled);
-    if (state.sobelEnabled && state.fxaaEnabled)
-        ImGui::TextDisabled("FXAA applies only when Sobel is off.");
-    ImGui::Checkbox("Vignette", &state.vignetteEnabled);
-    if (state.vignetteEnabled)
-        ImGui::SliderFloat("Vignette Strength", &state.vignetteStrength, 0.0f, 1.0f);
+    ImGui::Checkbox("Sobel Edge Detection", &state.sobelEnabled); // checkbox
+    ImGui::Checkbox("FXAA (anti-aliasing)", &state.fxaaEnabled); // checkbox
+    if (state.sobelEnabled && state.fxaaEnabled) // if sobel and fxaa are enabled
+        ImGui::TextDisabled("FXAA applies only when Sobel is off."); // text disabled
+    ImGui::Checkbox("Vignette", &state.vignetteEnabled); // checkbox
+    if (state.vignetteEnabled) // if vignette is enabled
+        ImGui::SliderFloat("Vignette Strength", &state.vignetteStrength, 0.0f, 1.0f); // slider float
 
     // Mutation history //
     ImGui::Separator(); // separator 
@@ -112,10 +117,10 @@ void UILayer::render(UIState& state, const std::string& sequence) {
     // End //
     ImGui::End();
 
-    // Panel Stats // 
-    ImGui::SetNextWindowPos ({ 10.0f, 560.0f }, ImGuiCond_Once); // set next window position
-    ImGui::SetNextWindowSize({ 320.0f, 0.0f  }, ImGuiCond_Once); // set next window size
-    ImGui::Begin("Stats"); // begin panel
+    // Panel Stats (bottom-right) //
+    ImGui::SetNextWindowPos({ display.x - kMargin, display.y - kMargin }, ImGuiCond_Always, { 1.0f, 1.0f }); // set next window position
+    ImGui::SetNextWindowSize({ kPanelWidth, 0.0f }, ImGuiCond_FirstUseEver); // set next window size
+    ImGui::Begin("Stats", nullptr, kFixedPanel); // begin panel
     ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate); // text 
     ImGui::Text("Frame: %.3f ms", 1000.0f / ImGui::GetIO().Framerate); // text 
     ImGui::End(); // end panel
