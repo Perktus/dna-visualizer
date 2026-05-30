@@ -23,6 +23,7 @@ Mesh HelixGeometry::buildStrand(const DNASequence& seq, const HelixParams& param
 
     for (int i = 0; i < n; ++i) {
         glm::vec3 center = nucleotidePos(i, params, phaseOffset);
+        const glm::vec3 baseColor = nucleotideColor(seq.at(i));
 
         const int stacks = params.sphereStacks;
         const int slices = params.sphereStacks * 2;
@@ -44,6 +45,7 @@ Mesh HelixGeometry::buildStrand(const DNASequence& seq, const HelixParams& param
                 };
                 v.normal = glm::normalize(v.position - center);
                 v.uv = { float(sl) / slices, float(s) / stacks };
+                v.color = baseColor;
                 vertices.push_back(v);
             }
         }
@@ -81,6 +83,7 @@ Mesh HelixGeometry::buildStrand(const DNASequence& seq, const HelixParams& param
                 v0.normal = v1.normal = glm::normalize(offset);
                 v0.uv = { float(k) / sides, 0.0f };
                 v1.uv = { float(k) / sides, 1.0f };
+                v0.color = v1.color = baseColor;
                 vertices.push_back(v0);
                 vertices.push_back(v1);
             }
@@ -149,9 +152,10 @@ Mesh HelixGeometry::buildBonds(const DNASequence& seq, const HelixParams& params
 
 // ── Build ── //
 HelixMeshes HelixGeometry::build(const DNASequence& seq, const HelixParams& params) {
+    DNASequence complement = seq.complementary();
     return {
-        buildStrand(seq, params,   0.0f),
-        buildStrand(seq, params, 180.0f),
+        buildStrand(seq,        params,   0.0f),
+        buildStrand(complement, params, 180.0f),
         buildBonds (seq, params)
     };
 }

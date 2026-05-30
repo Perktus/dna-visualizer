@@ -25,11 +25,11 @@ struct HelixMeshes {
 class HelixGeometry {
 public:
     static HelixMeshes build(const DNASequence& seq, const HelixParams& params = {});
+    static glm::vec3 nucleotidePos(int index, const HelixParams& params, float phaseOffset);
 
 private:
     static Mesh buildStrand(const DNASequence& seq, const HelixParams& params, float phaseOffset);
     static Mesh buildBonds(const DNASequence& seq, const HelixParams& params);
-    static glm::vec3 nucleotidePos(int index, const HelixParams& params, float phaseOffset);
 };
 
 } // namespace dna
