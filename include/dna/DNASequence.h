@@ -25,6 +25,8 @@ public:
     DNASequence complementary() const;
 
     void mutate(int index, Nucleotide newType);
+    void insert(int index, Nucleotide base);
+    void remove(int index);
 
     std::string toString() const;
 
