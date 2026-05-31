@@ -22,8 +22,19 @@ void InputManager::onScroll(double yOffset) {
 }
 
 void InputManager::onKey(int key, int action) {
-    // rozbudujemy później
-    (void)key; (void)action;
+    if (key < 0 || key >= kMaxKeys)
+        return;
+
+    if (action == GLFW_PRESS)
+        m_keys[key] = true;
+    else if (action == GLFW_RELEASE)
+        m_keys[key] = false;
+}
+
+bool InputManager::isKeyDown(int key) const {
+    if (key < 0 || key >= kMaxKeys)
+        return false;
+    return m_keys[key];
 }
 
 void InputManager::flush() {

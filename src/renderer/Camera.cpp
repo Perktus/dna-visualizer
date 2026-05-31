@@ -6,7 +6,7 @@ namespace dna {
 
 // ── Constructor ── //
 Camera::Camera(float fovDeg, float aspect, float nearPlane, float farPlane)
-    : m_fov(fovDeg), m_aspect(aspect), m_near(nearPlane), m_far(farPlane) {   
+    : m_fov(fovDeg), m_aspect(aspect), m_near(nearPlane), m_far(farPlane) {
 }
 
 // ── Arcball ── //
@@ -19,6 +19,12 @@ void Camera::rotate(float deltaX, float deltaY) {
 void Camera::zoom(float delta) {
     m_distance -= delta * 0.5f;
     m_distance = std::clamp(m_distance, 1.0f, 50.0f);
+}
+
+void Camera::reset() {
+    m_yaw = 0.0f;
+    m_pitch = 0.0f;
+    m_distance = 5.0f;
 }
 
 // ── Matrices ── //
@@ -41,7 +47,7 @@ glm::mat4 Camera::getProjection() const {
 }
 
 glm::vec3 Camera::getPosition() const {
-    float yawRad   = glm::radians(m_yaw);
+    float yawRad = glm::radians(m_yaw);
     float pitchRad = glm::radians(m_pitch);
 
     return {
