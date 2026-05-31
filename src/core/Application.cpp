@@ -12,6 +12,8 @@ namespace {
     constexpr int kHelixLength = 32;
     constexpr float kKeyboardRotateSpeed = 1.5f;
     constexpr float kKeyboardScaleSpeed = 0.8f;
+    constexpr float kPedestalHalfHeight = 0.25f;
+    constexpr float kPedestalTopGap = 0.02f;
 }
 
 // ── Inicjalizacja: GLFW (Window), OpenGL 3.3 Core (GLAD), shadery, tekstury ──
@@ -210,8 +212,13 @@ void Application::renderScene() {
     m_shader->setMat4("uProjection", m_camera.getProjection());
     setupLightingUniforms(viewPos);
 
+    HelixParams params;
+    // Pierwsza baza ma y=0; dolna połowa kuli (promień sphereRadius) musi leżeć na postumencie
+    const float helixBaseY = -m_helixCenterY + params.sphereRadius + kPedestalTopGap;
+    const float pedestalCenterY = helixBaseY - params.sphereRadius - kPedestalTopGap - kPedestalHalfHeight;
+
     // Macierz modelu helisy: centrowanie, skala, obrót (animacja)
-    glm::mat4 helixModel = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -m_helixCenterY, 0.0f));
+    glm::mat4 helixModel = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, helixBaseY, 0.0f));
     helixModel = glm::rotate(helixModel, m_rotationAngle, glm::vec3(0.0f, 1.0f, 0.0f));
     helixModel = glm::scale(helixModel, glm::vec3(m_uiState.helixScale));
 
@@ -219,14 +226,17 @@ void Application::renderScene() {
 
     // Model 1: płaszczyzna podłoża (teksturowana szachownica)
     {
-        glm::mat4 groundModel = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -m_helixCenterY - 0.55f, 0.0f));
+        glm::mat4 groundModel = glm::translate(
+            glm::mat4(1.0f),
+            glm::vec3(0.0f, pedestalCenterY - kPedestalHalfHeight - 0.05f, 0.0f)
+        );
         drawMesh(m_groundPlane, groundModel, white, true, &m_groundTexture);
     }
 
     // Model 2: postument (sześcian, kolor jednolity)
     {
-        glm::mat4 pedestalModel = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -m_helixCenterY - 0.25f, 0.0f));
-        pedestalModel = glm::scale(pedestalModel, glm::vec3(2.5f, 0.25f, 2.5f));
+        glm::mat4 pedestalModel = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, pedestalCenterY, 0.0f));
+        pedestalModel = glm::scale(pedestalModel, glm::vec3(2.5f, kPedestalHalfHeight, 2.5f));
         drawMesh(m_pedestal, pedestalModel, glm::vec3(0.35f, 0.35f, 0.4f), false, nullptr);
     }
 
