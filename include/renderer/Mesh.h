@@ -10,7 +10,7 @@ struct Vertex {
     glm::vec3 position;
     glm::vec3 normal;
     glm::vec2 uv;
-    glm::vec3 color { 1.0f, 1.0f, 1.0f };
+    glm::vec3 color{ 1.0f, 1.0f, 1.0f };
 };
 
 class Mesh {
@@ -21,12 +21,14 @@ public:
     Mesh(Mesh&& other) noexcept;
     Mesh& operator=(Mesh&& other) noexcept;
 
-    Mesh(const Mesh&)            = delete;
+    Mesh(const Mesh&) = delete;
     Mesh& operator=(const Mesh&) = delete;
 
     void draw() const;
 
     static Mesh createSphere(float radius, int stacks, int slices);
+    static Mesh createPlane(float halfWidth, float halfDepth);
+    static Mesh createCube(float halfExtent);
 
 private:
     GLuint m_vao{ 0 };
