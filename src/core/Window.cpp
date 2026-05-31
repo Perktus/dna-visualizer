@@ -5,7 +5,7 @@
 
 namespace dna {
 
-// ── Konstruktor / Destruktor ──────────────────────────
+// ── Inicjalizacja GLFW + kontekst OpenGL 3.3 Core (wymaganie projektowe) ──
 
 Window::Window(int width, int height, const std::string& title)
     : m_width(width), m_height(height)
@@ -32,10 +32,10 @@ Window::Window(int width, int height, const std::string& title)
     glfwSetWindowUserPointer(m_window, this);
 
     // Rejestracja callbacków
-    glfwSetMouseButtonCallback    (m_window, cbMouseButton);
-    glfwSetCursorPosCallback      (m_window, cbMouseMove);
-    glfwSetScrollCallback         (m_window, cbScroll);
-    glfwSetKeyCallback            (m_window, cbKey);
+    glfwSetMouseButtonCallback(m_window, cbMouseButton);
+    glfwSetCursorPosCallback(m_window, cbMouseMove);
+    glfwSetScrollCallback(m_window, cbScroll);
+    glfwSetKeyCallback(m_window, cbKey);
     glfwSetFramebufferSizeCallback(m_window, cbResize);
 
     glViewport(0, 0, width, height);
@@ -50,8 +50,8 @@ Window::~Window() {
 // ── Public ────────────────────────────────────────────
 
 bool Window::shouldClose() const { return glfwWindowShouldClose(m_window); }
-void Window::pollEvents()        { glfwPollEvents(); }
-void Window::swapBuffers()       { glfwSwapBuffers(m_window); }
+void Window::pollEvents() { glfwPollEvents(); }
+void Window::swapBuffers() { glfwSwapBuffers(m_window); }
 
 // ── Callbacki ─────────────────────────────────────────
 
@@ -81,7 +81,7 @@ void Window::cbKey(GLFWwindow* w, int key, int, int action, int) {
 
 void Window::cbResize(GLFWwindow* w, int width, int height) {
     auto* self = static_cast<Window*>(glfwGetWindowUserPointer(w));
-    self->m_width  = width;
+    self->m_width = width;
     self->m_height = height;
     glViewport(0, 0, width, height);
 }
