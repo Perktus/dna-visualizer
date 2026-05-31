@@ -5,7 +5,17 @@
 #include <imgui_impl_opengl3.h>
 #include <GLFW/glfw3.h>
 
+#include <cfloat>
+
 namespace dna {
+
+namespace {
+    void beginSidePanel(const char* title, ImVec2 pos, float width, ImVec2 pivot = { 0.0f, 0.0f }) {
+        ImGui::SetNextWindowPos(pos, ImGuiCond_Always, pivot); // Set the next window position
+        ImGui::SetNextWindowSizeConstraints({ width, 0.0f }, { width, FLT_MAX }); // Lock width, auto height
+        ImGui::Begin(title, nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings); // Begin side panel (no saved size — avoids stale narrow layout from imgui.ini)
+    }
+}
 
 UILayer::UILayer(GLFWwindow* window) {
     IMGUI_CHECKVERSION(); // Check if the ImGui version is correct
@@ -49,14 +59,13 @@ bool UILayer::wantsCaptureKeyboard() const {
 
 void UILayer::render(UIState& state, const std::string& sequence) {
     const ImVec2 display = ImGui::GetIO().DisplaySize; // Get the display size
-    constexpr float kPanelWidth = 320.0f; // Set the panel width
-    constexpr float kMargin = 10.0f; // Set the margin
-    const float rightX = display.x - kPanelWidth - kMargin; // Set the right x position
-    constexpr ImGuiWindowFlags kFixedPanel = ImGuiWindowFlags_NoMove; // Set the fixed panel flags
+    constexpr float kLeftPanelWidth = 340.0f; // Set the left panel width
+    constexpr float kRightPanelWidth = 380.0f; // Set the right panel width
+    constexpr float kMargin = 12.0f; // Set the margin
+    constexpr float kPanelGap = 8.0f; // Gap between stacked left panels
+    const float rightX = display.x - kRightPanelWidth - kMargin; // Set the right x position
 
-    ImGui::SetNextWindowPos({ kMargin, kMargin }, ImGuiCond_Always); // Set the next window position
-    ImGui::SetNextWindowSize({ kPanelWidth, 0.0f }, ImGuiCond_FirstUseEver); // Set the next window size
-    ImGui::Begin("DNA Sequence", nullptr, kFixedPanel); // Begin the DNA sequence window
+    beginSidePanel("DNA Sequence", { kMargin, kMargin }, kLeftPanelWidth); // Begin the DNA sequence window
 
     ImGui::Text("Sequence (%d bp):", (int)sequence.size()); // Show the sequence length
     ImGui::TextWrapped("%s", sequence.c_str()); // Show the sequence
@@ -78,32 +87,61 @@ void UILayer::render(UIState& state, const std::string& sequence) {
     if (ImGui::Button("Mutate")) // Show the mutate button
         state.triggerMutation = true; // Trigger the mutation
 
+    const ImVec2 dnaPos = ImGui::GetWindowPos(); // Get the DNA sequence window position
+    const ImVec2 dnaSize = ImGui::GetWindowSize(); // Get the DNA sequence window size
     ImGui::End();
 
-    ImGui::SetNextWindowPos({ rightX, kMargin }, ImGuiCond_Always); // Set the next window position
-    ImGui::SetNextWindowSize({ kPanelWidth, 0.0f }, ImGuiCond_FirstUseEver); // Set the next window size
-    ImGui::Begin("Render Settings", nullptr, kFixedPanel); // Begin the render settings window
+    beginSidePanel(
+        "Controls & Stats",
+        { kMargin, dnaPos.y + dnaSize.y + kPanelGap },
+        kLeftPanelWidth
+    ); // Begin the controls & stats window (stacked below DNA Sequence)
+
+    ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate); // Show the fps
+    ImGui::Text("Frame: %.3f ms", 1000.0f / ImGui::GetIO().Framerate); // Show the frame time
+    ImGui::Separator();
+    ImGui::TextDisabled("Mouse:"); // Show the mouse text
+    ImGui::TextDisabled("  drag = orbit"); // Show the drag = orbit text
+    ImGui::TextDisabled("  scroll = zoom"); // Show the scroll = zoom text
+    ImGui::TextDisabled("Keys:"); // Show the keys text
+    ImGui::TextDisabled("  Left/Right = rotate helix"); // Show the left/right = rotate helix text
+    ImGui::TextDisabled("  +/- = scale, Space = toggle anim"); // Show the +/- = scale, space = toggle anim text
+    ImGui::TextDisabled("  R = reset camera, Esc = quit"); // Show the r = reset camera, esc = quit text
+    ImGui::End();
+
+    beginSidePanel("Render Settings", { rightX, kMargin }, kRightPanelWidth); // Begin the render settings window
 
     ImGui::Text("Animation:"); // Show the animation text
     ImGui::Checkbox("Helix rotation", &state.animationRunning); // Show the helix rotation checkbox
     ImGui::SliderFloat("Rotation speed", &state.rotationSpeed, 0.0f, 3.0f); // Show the rotation speed slider
     ImGui::Checkbox("Light orbit", &state.animateLight); // Show the light orbit checkbox
-    ImGui::SliderFloat("Light speed", &state.lightAnimSpeed, 0.0f, 3.0f);
+    ImGui::SliderFloat("Light speed", &state.lightAnimSpeed, 0.0f, 3.0f); // Show the light speed slider
     ImGui::SliderFloat("Helix scale", &state.helixScale, 0.4f, 2.5f); // Show the helix scale slider
 
     ImGui::Separator();
     ImGui::Text("Lighting (ambient + directional + point):"); // Show the lighting text
-    ImGui::ColorEdit3("Ambient", &state.ambientColor.r); // Show the ambient color editor           
+
+    ImGui::Text("Ambient color"); // Show the ambient color label
+    ImGui::ColorEdit3("##ambientColor", &state.ambientColor.r); // Show the ambient color editor
     ImGui::SliderFloat("Ambient strength", &state.ambientStrength, 0.0f, 2.0f); // Show the ambient strength slider
-    ImGui::DragFloat3("Dir. light dir", &state.dirLightDir.x, 0.02f); // Show the directional light direction drag float
-    ImGui::ColorEdit3("Dir. light color", &state.dirLightColor.r); // Show the directional light color editor
-    ImGui::DragFloat3("Point light pos", &state.lightPos.x, 0.1f); // Show the point light position drag float
-    ImGui::ColorEdit3("Point light color", &state.lightColor.r); // Show the point light color editor
+
+    ImGui::Text("Dir. light direction"); // Show the directional light direction label
+    ImGui::DragFloat3("##dirLightDir", &state.dirLightDir.x, 0.02f); // Show the directional light direction drag float
+
+    ImGui::Text("Dir. light color"); // Show the directional light color label
+    ImGui::ColorEdit3("##dirLightColor", &state.dirLightColor.r); // Show the directional light color editor
+
+    ImGui::Text("Point light position"); // Show the point light position label
+    ImGui::DragFloat3("##pointLightPos", &state.lightPos.x, 0.1f); // Show the point light position drag float
+
+    ImGui::Text("Point light color"); // Show the point light color label
+    ImGui::ColorEdit3("##pointLightColor", &state.lightColor.r); // Show the point light color editor
+
     ImGui::SliderFloat("Shininess", &state.shininess, 1.0f, 128.0f); // Show the shininess slider
 
     ImGui::Separator();
     ImGui::Text("Texture filtering:"); // Show the texture filtering text
-    const char* filters[] = { "Nearest", "Linear", "Mipmap (trilinear)" };
+    const char* filters[] = { "Nearest", "Linear", "Mipmap (trilinear)" }; // Set the filter modes
     ImGui::Combo("Filter mode", &state.textureFilter, filters, 3); // Show the filter mode combo
 
     ImGui::Separator();
@@ -120,18 +158,6 @@ void UILayer::render(UIState& state, const std::string& sequence) {
     ImGui::Text("Mutation history:"); // Show the mutation history text
     ImGui::TextWrapped("%s", state.mutationLog.c_str()); // Show the mutation log
 
-    ImGui::End();
-
-    ImGui::SetNextWindowPos({ display.x - kMargin, display.y - kMargin }, ImGuiCond_Always, { 1.0f, 1.0f });
-    ImGui::SetNextWindowSize({ kPanelWidth, 0.0f }, ImGuiCond_FirstUseEver); // Set the next window size
-    ImGui::Begin("Controls & Stats", nullptr, kFixedPanel); // Begin the controls & stats window
-    ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate); // Show the fps
-    ImGui::Text("Frame: %.3f ms", 1000.0f / ImGui::GetIO().Framerate); // Show the frame time
-    ImGui::Separator();
-    ImGui::TextDisabled("Mouse: drag = orbit, scroll = zoom"); // Show the mouse drag = orbit, scroll = zoom text
-    ImGui::TextDisabled("Keys: Left/Right = rotate helix"); // Show the keys left/right = rotate helix text
-    ImGui::TextDisabled("      +/- = scale, Space = toggle anim"); // Show the keys +/- = scale, space = toggle anim text
-    ImGui::TextDisabled("      R = reset camera, Esc = quit"); // Show the r = reset camera, esc = quit text
     ImGui::End();
 }
 
